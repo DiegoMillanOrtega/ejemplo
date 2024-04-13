@@ -1,0 +1,15 @@
+<header>Información del Sistema</header>
+<form [formGroup]="newUserSetting" (ngSubmit)="updateUserSetting()">
+
+    <div class="form-floating">
+        <input type="search" class="form-control" id="floatingInputGroup2" required formControlName="nameSystem">
+        <label for="floatingInputGroup2">Nombre del Sistema:</label>
+    </div>
+
+    <label for="logo">Logo del Sistema: </label>
+    <img [src]="_settingService.getLogoSrc()" alt="">
+    <input type="file" (change)="onFileSelected($event)">
+    
+    <button class="btn btn-success">Actualizar</button>
+</form>
+

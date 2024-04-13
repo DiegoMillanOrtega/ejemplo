@@ -1,0 +1,45 @@
+<div style="max-height: 520px; overflow-y: auto">
+  <table class="table table-striped table-hover" style="text-align: center">
+    <thead>
+      <tr class="table-primary">
+        <th scope="col">#</th>
+        <th scope="col">Producto</th>
+        <th scope="col">Cliente</th>
+        <th scope="col">Dirección</th>
+        <th scope="col">Stock</th>
+        <th scope="col">Valor</th>
+        <th scope="col">Confirmar</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (pedido of listPedidos; track $index) {
+      <tr [ngClass]="{ 'table-success': pedido.confirmedDelivery }">
+        <th scope="row">{{ pedido.id }}</th>
+        <td>{{ pedido.product }}</td>
+        <td>{{ pedido.client }}</td>
+        <td>{{ pedido.address }}</td>
+        <td>{{ pedido.stock }}</td>
+        <td>{{ pedido.price | currency : "USD" : "symbol" : "1.0-0" }}</td>
+        <td>
+          @if (pedido.confirmedDelivery) {
+          <ng-container>
+            <button class="btn btn-danger" (click)="toggleConfirmation(pedido)">
+              <app-icons-svg [nombreIcono]="'cancel'"></app-icons-svg>
+            </button>
+          </ng-container>
+          } @if(!pedido.confirmedDelivery) {
+          <ng-container>
+            <button
+              class="btn btn-success"
+              (click)="toggleConfirmation(pedido)"
+            >
+              <app-icons-svg [nombreIcono]="'check'"></app-icons-svg>
+            </button>
+          </ng-container>
+          }
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>

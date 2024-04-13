@@ -1,0 +1,51 @@
+<div class="centro">
+    <div class="menu">
+        <menu>
+            <li><button [routerLink]="['']" [ngClass]="{active: menuSelect == ''}"
+             (click)="onOption('')">Inicio</button></li>
+
+            <li><button [routerLink]="['setting']" [ngClass]="{active: menuSelect == 'setting'}"
+                (click)="onOption('setting')">Configuración</button></li>
+
+            <div>
+                <div class="accordion-item">
+                    <button type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne"
+                    (click)="toggleCollapse()">
+                        Gestión de productos
+                        @if (!isCollapsed) {
+                            <app-icons-svg [nombreIcono]="'short-down'" [width]="18" [height]="18"/>
+                        }
+                        @if (isCollapsed) {
+                            <app-icons-svg [nombreIcono]="'short-left'" [width]="18" [height]="18"/>
+                        }
+                    </button>
+
+                    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample"
+                        [class.show]="!isCollapsed">
+                        <div class="">
+                            <li class="nav-item dropdown">
+                                <button [routerLink]="['category']" [ngClass]="{active: menuSelect == 'category'}"
+                                    (click)="onOption('category')">
+                                    <app-icons-svg [nombreIcono]="'short-rigth'" [width]="18" [height]="18"/>
+                                    Categorías
+                                </button>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <button [routerLink]="['inventory']" [ngClass]="{active: menuSelect == 'inventory'}"
+                                    (click)="onOption('inventory')">
+                                    <app-icons-svg [nombreIcono]="'short-rigth'" [width]="18" [height]="18"/>
+                                    Productos
+                                </button>
+                            </li>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </menu>
+    </div>
+
+    <div class="right">
+        <router-outlet></router-outlet>
+    </div>
+</div>
+

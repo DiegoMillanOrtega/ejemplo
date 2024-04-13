@@ -1,0 +1,38 @@
+<header>Agregar un nuevo producto</header>
+<form [formGroup]="newProduct" (ngSubmit)="enviarProducto()">
+    
+    <div class="form-floating">
+        <input type="search" class="form-control" id="floatingInputGroup2" required formControlName="product">
+        <label for="floatingInputGroup2">Nombre del producto:</label>
+    </div>
+    
+    <div class="form-floating">
+        <input type="number" class="form-control" id="floatingInputGroup2" required formControlName="stock">
+        <label for="floatingInputGroup2">Cantidad:</label>
+    </div>
+
+    <div class="form-floating">
+        <input type="number" class="form-control" id="floatingInputGroup2" required formControlName="price">
+        <label for="floatingInputGroup2">Precio:</label>
+    </div>
+
+    <div class="dropdown">
+
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            @if (newProduct.get('category')?.valid) {
+                {{ newProduct.get('category')?.value }}
+            } @else {
+                Categoría
+            }
+        </button>
+
+        <ul class="dropdown-menu" style="max-height: 80px; overflow-y: auto;">
+            @for (category of categoryList; track $index) {
+                <li><a class="dropdown-item" (click)="categoriaSeleccionada( category.category)">{{ category.category }}</a></li>
+            }
+        </ul>
+    </div>
+
+    <button type="submit" class="btn btn-success" [disabled]="newProduct.invalid">Guardar</button>
+</form>
+

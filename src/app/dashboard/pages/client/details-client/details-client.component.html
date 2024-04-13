@@ -1,0 +1,106 @@
+<header>
+  Detalles del cliente:
+  <p>{{ nameClient | titlecase }}</p>
+</header>
+@if (loading) {
+  <ng-container>
+    <div class="container">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </ng-container>
+}
+@if (!loading) {
+<ng-container>
+  <form [formGroup]="detailsClient" (ngSubmit)="actualizarCliente()">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <div class="form-floating">
+          <input
+            type="text"
+            class="form-control"
+            id="nombre"
+            formControlName="name"
+            [ngClass]="{ 'is-invalid': detailsClient.get('name')?.invalid }"
+          />
+          <label for="nombre">Nombre del cliente:</label>
+          <div class="invalid-feedback">Nombre es requerido</div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-floating">
+          <input
+            type="text"
+            class="form-control"
+            id="apellido"
+            formControlName="lastName"
+            [ngClass]="{ 'is-invalid': detailsClient.get('lastName')?.invalid }"
+          />
+          <label for="apellido">Apellido:</label>
+          <div class="invalid-feedback">Apellido es requerido</div>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <div class="form-floating">
+          <input
+            type="text"
+            class="form-control"
+            id="direccion"
+            formControlName="address"
+            [ngClass]="{ 'is-invalid': detailsClient.get('address')?.invalid }"
+          />
+          <label for="direccion">Dirección:</label>
+          <div class="invalid-feedback">Dirección es requerida</div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-floating">
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            formControlName="email"
+            [ngClass]="{ 'is-invalid': detailsClient.get('email')?.invalid }"
+          />
+          <label for="email">Email:</label>
+          <div class="invalid-feedback">Email es requerido</div>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <div class="form-floating">
+          <input
+            type="email"
+            class="form-control"
+            id="telefono"
+            formControlName="phoneNumber"
+            [ngClass]="{
+              'is-invalid': detailsClient.get('phoneNumber')?.invalid
+            }"
+          />
+          <label for="telefono">Teléfono:</label>
+          <div class="invalid-feedback">Email es requerido</div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-floating">
+          <select class="form-select" id="sexo" formControlName="gender">
+            <option value="masculino">Masculino</option>
+            <option value="femenino">Femenino</option>
+            <option value="otro">Otro</option>
+          </select>
+          <label for="sexo">Sexo:</label>
+          <div class="invalid-feedback">Sexo es requerido</div>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-success" [disabled]="detailsClient.invalid">
+      Actualizar cliente
+    </button>
+  </form>
+</ng-container>
+}

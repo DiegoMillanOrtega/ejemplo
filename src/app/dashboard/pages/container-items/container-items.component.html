@@ -1,0 +1,50 @@
+<div class="right">
+    <div class="container-items">
+        <a routerLink="client">
+            <div class="grid-item">
+                <div>
+                    <app-icons-svg [nombreIcono]="'person'" [width]="50" [height]="50"></app-icons-svg>
+                </div>
+                <p>Clientes</p>
+            </div>
+        </a>
+        <a href="#">
+            <div class="grid-item">
+                <h2> {{ cantidadProductos }}</h2>
+                <p>Productos</p>
+            </div>
+        </a>
+        <a routerLink="/inventory">
+            <div class="grid-item">
+                <div>
+                    <app-icons-svg [nombreIcono]="'boxes'" [width]="50" [height]="50"></app-icons-svg>
+                </div>
+                <p>Inventario</p>
+            </div>
+        </a>
+        <a routerLink="/listPedidos">
+            <div class="grid-item">
+                <div>
+                    <app-icons-svg [nombreIcono]="'delivery'" [width]="50" [height]="50"></app-icons-svg>
+                </div>
+                <p>Pedidos</p>
+            </div>
+        </a>
+        <a href="#">
+            <div class="grid-item">
+                <div>
+                    <app-icons-svg [nombreIcono]="'left'" [width]="50" [height]="50"></app-icons-svg>
+                </div>
+                <p>Entrada</p>
+            </div>
+        </a>
+        <a href="#">
+            <div class="grid-item">
+                <div>
+                    <app-icons-svg [nombreIcono]="'stock'" [width]="50" [height]="50"></app-icons-svg>
+                </div>
+                <p>Sin stock</p>
+            </div>
+        </a>
+    </div>    
+</div>

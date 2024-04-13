@@ -1,0 +1,67 @@
+<header>Lista de clientes</header>
+<div class="container mb-4 mt-3">
+  <nav class="navbar bg-body-tertiary">
+    <div class="container-fluid">
+      <div class="d-flex" role="search">
+        <input
+          class="form-control me-2"
+          type="search"
+          placeholder="Buscar por nombre"
+          aria-label="Search"
+          [(ngModel)]="findClient"
+          (keydown.enter)="buscarProductos()"
+        />
+     
+        <button class="btn btn-outline-success w-50" type="submit" (click)="buscarProductos()">
+          <app-icons-svg [nombreIcono]="'search'" /> Search
+        </button>
+
+        <button type="button" class="btn btn-primary" routerLink="addClient">
+          <app-icons-svg [nombreIcono]="'add'" />
+        </button>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<div style="max-height: 400px; overflow-y: auto">
+  <table class="table table-striped" style="text-align: center">
+    <thead>
+      <tr class="table-warning">
+        <th scope="col">#</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Apellido</th>
+        <th scope="col">Sexo</th>
+        <th scope="col">Dirección</th>
+        <th scope="col">Email</th>
+        <th scope="col">Telefono</th>
+        <th scope="col">Seleccionar</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (client of clientsList; track $index) {
+      <tr>
+        <th scope="row">{{ client.id }}</th>
+        <td>{{ client.name }}</td>
+        <td>{{ client.lastName }}</td>
+        <td>{{ client.gender }}</td>
+        <td>{{ client.address }}</td>
+        <td>{{ client.email }}</td>
+        <td>{{ client.phoneNumber }}</td>
+        <td>
+          <div class="d-flex">
+            <button class="btn btn-primary" [routerLink]="['/client','details', client.id, client.name]">
+              <app-icons-svg [nombreIcono]="'edit'"/>
+            </button>
+            <button class="btn btn-danger" (click)="eliminarClient(client.id)">
+              <app-icons-svg [nombreIcono]="'delete'"/>
+            </button>
+          </div>
+        
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>
+

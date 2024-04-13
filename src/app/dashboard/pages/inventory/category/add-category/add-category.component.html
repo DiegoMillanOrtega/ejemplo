@@ -1,0 +1,10 @@
+<header>Agregar una nueva categoría</header>
+<form [formGroup]="newCategory" (ngSubmit)="enviarCategoria()">
+    
+    <div class="form-floating">
+        <input type="search" class="form-control" id="floatingInputGroup2" required formControlName="category">
+        <label for="floatingInputGroup2">Nombre de la categoria:</label>
+    </div>
+
+    <button type="submit" class="btn btn-success mt-4" [disabled]="newCategory.invalid">Guardar</button>
+</form>

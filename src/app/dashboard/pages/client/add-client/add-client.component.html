@@ -1,0 +1,81 @@
+<header>Agregar nuevo cliente</header>
+<form [formGroup]="newClient" (ngSubmit)="addCliente()">
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <div class="form-floating">
+        <input
+          type="text"
+          class="form-control"
+          id="nombre"
+          formControlName="name"
+        />
+        <label for="nombre">Nombre del cliente:</label>
+        <div class="invalid-feedback">Nombre es requerido</div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-floating">
+        <input
+          type="text"
+          class="form-control"
+          id="apellido"
+          formControlName="lastName"
+        />
+        <label for="apellido">Apellido:</label>
+        <div class="invalid-feedback">Apellido es requerido</div>
+      </div>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <div class="form-floating">
+        <input
+          type="text"
+          class="form-control"
+          id="direccion"
+          formControlName="address"
+        />
+        <label for="direccion">Dirección:</label>
+        <div class="invalid-feedback">Dirección es requerida</div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-floating">
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          formControlName="email"
+        />
+        <label for="email">Email:</label>
+        <div class="invalid-feedback">Email es requerido</div>
+      </div>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <div class="form-floating">
+        <input
+          type="email"
+          class="form-control"
+          id="telefono"
+          formControlName="phoneNumber"
+        />
+        <label for="telefono">Teléfono:</label>
+        <div class="invalid-feedback">Email es requerido</div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-floating">
+        <select class="form-select" id="sexo" formControlName="gender">
+          <option value="Masculino">Masculino</option>
+          <option value="Femenino">Femenino</option>
+          <option value="Otro">Otro</option>
+        </select>
+        <label for="sexo">Sexo:</label>
+        <div class="invalid-feedback">Sexo es requerido</div>
+      </div>
+    </div>
+  </div>
+  <button class="btn btn-success">Agregar cliente</button>
+</form>

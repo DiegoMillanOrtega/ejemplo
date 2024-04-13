@@ -1,0 +1,19 @@
+<div class="contenedor">
+  <header>
+    @if (_loginService.isAuthenticated()) {
+    <p>{{ _settingService.obtainedUserSetting()?.nameSystem }}</p>
+    @if (_settingService.getLogoSrc()) {
+      <img [src]="_settingService.getLogoSrc()" alt="" />
+    }
+    } @else {
+    <p>Gestión y Control</p>
+    }
+  </header>
+
+  @if (_loginService.isAuthenticated()) {
+    <app-dashboard />
+  } @else {
+    <app-login />
+  }
+  <footer></footer>
+</div>

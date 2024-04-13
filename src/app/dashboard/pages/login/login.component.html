@@ -1,0 +1,26 @@
+<form [formGroup]="user" (ngSubmit)="onSubmit()">             
+    <div>
+        <img src="assets/imagenes/sena-colombia-logo.svg" alt="">
+        <p>Usuario</p>
+    </div>
+    
+    <input type="text" id="user" formControlName="username" class="form-control"
+    [ngClass]="{'is-invalid': hasError('username', 'required')}"
+    placeholder="Usuario">
+
+    @if (hasError('username', 'required')) {
+        <div class="invalid-feedback">Usuario requerido</div>
+    }
+
+    <input type="password" id="pass" formControlName="password" class="form-control"
+    [ngClass]="{'is-invalid': hasError('password', 'required')}"
+    placeholder="Contraseña">
+    
+    @if (hasError('password', 'required')) {
+        <div class="invalid-feedback">Contraseña requerida</div>
+    }
+
+    <button id="btn">Iniciar Sesión</button>      
+</form>
+
+

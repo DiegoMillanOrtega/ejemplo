@@ -1,0 +1,56 @@
+header {
+    display: flex;
+    justify-content: start;
+    column-gap: 20px;
+    align-items: center;
+    border-bottom: 2px solid black;
+    height: 40px;
+    padding: 5px 20px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: white; /* You can change the background color if needed */
+}
+
+footer {
+    border-top: 2px solid black;
+    height: 40px;
+    padding: 5px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white; /* You can change the background color if needed */
+}
+
+p {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+}
+.contenedor {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 600px;
+    width: 60%;
+    margin: 40px auto;
+    background-color: white;
+    border-radius: 5px;
+    border: 2px solid black;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.281);
+    position: relative;
+    z-index: 1;
+}
+
+/* styles.css o estilos del componente */
+
+  

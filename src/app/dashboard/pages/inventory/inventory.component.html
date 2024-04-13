@@ -1,0 +1,133 @@
+<header>Lista de productos</header>
+
+<div class="container">
+  <nav class="navbar bg-body-tertiary">
+    <div class="container-fluid">
+      <div class="d-flex" role="search">
+        <input
+          class="form-control me-2"
+          type="search"
+          placeholder="Buscar por nombre"
+          aria-label="Search"
+          [(ngModel)]="productName"
+          (keydown.enter)="buscarProductos()"
+        />
+
+        <div class="dropdown">
+          <button
+            class="btn btn-secondary dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            @if (productCategory.valueOf()) {
+            {{ productCategory }}
+            } @else { Filtrar por categoría }
+          </button>
+          <ul class="dropdown-menu" style="max-height: 110px; overflow-y: auto">
+            <!-- <li><a class="dropdown-item" (click)="buscarProductosByCategory('Limpieza')">Limpieza</a></li>
+            <li><a class="dropdown-item" (click)="buscarProductosByCategory('Comida')">Comida</a></li>
+            <li><a class="dropdown-item" (click)="buscarProductosByCategory('Bebida')">Bebida</a></li> -->
+            @for (category of categoryList; track $index) {
+            <li>
+              <a
+                class="dropdown-item"
+                (click)="buscarProductosByCategory(category.category)"
+                >{{ category.category }}</a
+              >
+            </li>
+            }
+          </ul>
+        </div>
+
+        <button
+          class="btn btn-outline-success w-50"
+          type="submit"
+          (click)="buscarProductos()"
+        >
+          <app-icons-svg [nombreIcono]="'search'" /> Search
+        </button>
+
+        <button type="button" class="btn btn-primary" routerLink="addProduct">
+          <app-icons-svg [nombreIcono]="'add'" />
+        </button>
+      </div>
+    </div>
+  </nav>
+</div>
+
+@if (loading) {
+<ng-container>
+  <div class="d-flex justify-content-center h-50">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</ng-container>
+} @if (!loading) {
+<ng-container>
+  @if (inventoryList.length === 0) { Lista vacia } @else {
+
+  <div style="max-height: 410px; overflow-y: auto">
+    <table class="table table-striped" style="text-align: center">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Producto</th>
+          <th scope="col">Categoría</th>
+          <th scope="col">Precio</th>
+          <th scope="col">Cantidad</th>
+          <th scope="col">Seleccionar</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (product of inventoryList; track $index) {
+        <tr [ngClass]="{ 'table-danger': product.stock <= 4 }">
+          <th scope="row">{{ product.id }}</th>
+          <td>{{ product.product }}</td>
+          <td>{{ product.category }}</td>
+          <td>{{ product.price | currency }}</td>
+          <td>{{ product.stock }}</td>
+          <td>
+            <div class="d-flex">
+              <button
+                [routerLink]="[
+                  '/inventory',
+                  'details',
+                  product.id,
+                  product.product
+                ]"
+                type="button"
+                class="btn btn-info"
+              >
+                <app-icons-svg [nombreIcono]="'edit'" />
+              </button>
+              <button
+                (click)="deleteProduct(product.id)"
+                type="button"
+                class="btn btn-danger"
+              >
+                <app-icons-svg [nombreIcono]="'delete'" />
+              </button>
+              <button
+                class="btn btn-secondary"
+                [routerLink]="[
+                  '/inventory',
+                  'pedido',
+                  product.id,
+                  product.product
+                ]"
+              >
+                <app-icons-svg [nombreIcono]="'delivery'" />
+              </button>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  }
+</ng-container>
+}

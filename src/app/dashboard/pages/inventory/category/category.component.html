@@ -1,0 +1,54 @@
+<header>Lista de categorías</header>
+
+<nav class="navbar bg-body-tertiary">
+    <div class="container-fluid">
+  
+      <div class="d-flex" role="search">
+        <input class="form-control me-2" type="search" placeholder="Buscar por nombre" aria-label="Search"
+        [(ngModel)]="category">
+        
+        <button class="btn btn-outline-success w-50" type="submit" (click)="buscarCategoria()">
+          <app-icons-svg [nombreIcono]="'search'"/>
+          Search
+        </button>
+
+        <button type="button" class="btn btn-primary w-100" routerLink="newCategory">
+          <app-icons-svg [nombreIcono]="'add'"/>
+          Nueva categoría
+        </button>
+
+      </div>
+
+    </div>
+  </nav>
+
+<div style="max-height: 410px; overflow-y: auto;">
+  <table class="table" >
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Categoria</th>
+        <th scope="col">Editar</th>
+        <th scope="col">Eliminar</th>
+      </tr>
+    </thead>
+    <tbody>
+    @for (category of CategoryList; track $index) { 
+      <tr>
+        <th scope="row">{{ category.id }}</th>
+            <td>{{ category.category }}</td>
+            <td>
+                <button type="button" class="btn btn-info" (click)="editarCategoria(category.id)">
+                  <app-icons-svg [nombreIcono]="'edit'"/>
+                </button>
+            </td>
+            <td>
+                <button class="btn btn-danger" (click)="eliminarCategoria(category.id)">
+                  <app-icons-svg [nombreIcono]="'delete'"/>
+                </button>
+            </td>
+      </tr>
+    }
+    </tbody>
+  </table>
+</div>

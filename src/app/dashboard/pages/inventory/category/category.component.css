@@ -1,0 +1,15 @@
+header {
+    padding: 15px;
+    border-bottom: 2px solid black;
+    font-weight: bold;
+    background-color: lightgray;
+}
+img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+.d-flex {   
+    align-items: center;
+    column-gap: 15px;
+}

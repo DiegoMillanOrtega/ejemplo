@@ -1,0 +1,26 @@
+form {
+    display: grid;
+    padding: 48px 40px 40px;
+    row-gap: 25px;
+    font-weight: bold;
+}
+header {
+    display: flex;
+    column-gap: 5px;
+    padding: 15px;
+    border-bottom: 2px solid black;
+    font-weight: bold;
+    background-color: lightgray;
+}
+p {
+    color: royalblue;
+    padding: 0;
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
+}

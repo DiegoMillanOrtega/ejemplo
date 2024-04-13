@@ -1,0 +1,95 @@
+<header>
+  Detalles del producto seleccionado:
+  <p>{{ product }}</p>
+</header>
+
+@if (loading) {
+<ng-container>
+  <div class="d-flex justify-content-center align-items-center h-75">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</ng-container>
+} @if (!loading) {
+<ng-container>
+  <form class="" [formGroup]="detailsProduct" (ngSubmit)="actualizarProducto()">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-floating">
+          <input
+            type="text"
+            class="form-control"
+            id="id"
+            formControlName="id"
+          />
+          <label for="id">Id del producto:</label>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-floating">
+          <input
+            type="search"
+            class="form-control"
+            id="product"
+            formControlName="product"
+          />
+          <label for="product">Nombre del producto:</label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-floating">
+          <input
+            type="number"
+            class="form-control"
+            id="precio"
+            formControlName="price"
+          />
+          <label for="precio">Precio:</label>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-floating">
+          <input
+            type="number"
+            class="form-control"
+            id="stock"
+            formControlName="stock"
+          />
+          <label for="stock">Cantidad:</label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="dropdown">
+          <button
+            class="btn btn-secondary dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            {{ detailsProduct.get("category")?.value }}
+          </button>
+          <ul class="dropdown-menu" style="max-height: 110px; overflow-y: auto">
+            @for (category of categoryList; track $index) {
+            <li>
+              <a
+                class="dropdown-item"
+                (click)="categoriaSeleccionada(category.category)"
+                >{{ category.category }}</a
+              >
+            </li>
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-success mt-4" [disabled]="detailsProduct.invalid">
+      Guardar
+    </button>
+  </form>
+</ng-container>
+}

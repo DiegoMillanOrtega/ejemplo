@@ -1,0 +1,31 @@
+header {
+    padding: 15px;
+    border-bottom: 2px solid black;
+    font-weight: bold;
+    background-color: lightgray;
+}
+
+img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+li:hover {
+    cursor: pointer;
+}
+table {
+    text-align: center;
+}
+.container{
+    margin: 20px 0 20px;
+}
+.d-flex {   
+    align-items: center;
+    column-gap: 15px;
+}
+.options {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    height: 100%;
+}
