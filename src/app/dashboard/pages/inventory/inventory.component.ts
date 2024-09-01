@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { InventoryService } from '../../../service/inventory.service';
 import { Inventory } from '../../../model/inventory.model';
 import Swal from 'sweetalert2';
@@ -13,6 +13,21 @@ import { Pedido } from '../../../model/pedido.model';
   styleUrl: './inventory.component.css',
 })
 export class InventoryComponent implements OnInit {
+
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+
+    if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+      return; // No hacer nada si el foco está en un input o textarea
+    }
+
+    console.log(event)
+
+    // if (event.key === 'control + ') {
+    //   ;
+    // }
+  }
+
   private _inventoryService = inject(InventoryService);
   private categoryService = inject(CategoryService);
   private alerts = inject(AlertsService);
