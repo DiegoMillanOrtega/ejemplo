@@ -1,45 +1,138 @@
-<div style="max-height: 520px; overflow-y: auto">
-  <table class="table table-striped table-hover" style="text-align: center">
-    <thead>
-      <tr class="table-primary">
-        <th scope="col">#</th>
-        <th scope="col">Producto</th>
-        <th scope="col">Cliente</th>
-        <th scope="col">Dirección</th>
-        <th scope="col">Stock</th>
-        <th scope="col">Valor</th>
-        <th scope="col">Confirmar</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (pedido of listPedidos; track $index) {
-      <tr [ngClass]="{ 'table-success': pedido.confirmedDelivery }">
-        <th scope="row">{{ pedido.id }}</th>
-        <td>{{ pedido.product }}</td>
-        <td>{{ pedido.client }}</td>
-        <td>{{ pedido.address }}</td>
-        <td>{{ pedido.stock }}</td>
-        <td>{{ pedido.price | currency : "USD" : "symbol" : "1.0-0" }}</td>
-        <td>
-          @if (pedido.confirmedDelivery) {
-          <ng-container>
-            <button class="btn btn-danger" (click)="toggleConfirmation(pedido)">
-              <app-icons-svg [nombreIcono]="'cancel'"></app-icons-svg>
-            </button>
-          </ng-container>
-          } @if(!pedido.confirmedDelivery) {
-          <ng-container>
-            <button
-              class="btn btn-success"
-              (click)="toggleConfirmation(pedido)"
-            >
-              <app-icons-svg [nombreIcono]="'check'"></app-icons-svg>
-            </button>
-          </ng-container>
+<header>
+  Información del Pedido: Ingresa los detalles necesarios para procesar tu
+  pedido
+</header>
+<div>
+  <nav class="navbar bg-body-tertiary">
+    <div class="container-fluid">
+      <div class="d-flex" role="search">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="showAndAddProducts()"
+        >
+          <app-icons-svg [nombreIcono]="'addOrder'" />
+        </button>
+
+        <button class="btn btn-info colorFont" (click)="showSelectedProducts()">
+          <app-icons-svg [nombreIcono]="'table'" />
+        </button>
+
+        <button class="btn btn-info" (click)="showClients()">
+          <app-icons-svg [nombreIcono]="'person'" />
+        </button>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<div>
+  <form [formGroup]="labelCliente">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-floating">
+          <input
+            type="text"
+            class="form-control"
+            id="id"
+            formControlName="id"
+          />
+          <label for="id">Id del producto:</label>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-floating">
+          <input
+            type="search"
+            class="form-control"
+            id="product"
+            formControlName="product"
+          />
+          <label for="product">Nombre del producto:</label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-floating">
+          <input
+            type="number"
+            class="form-control"
+            id="precio"
+            formControlName="price"
+          />
+          <label for="precio">Precio:</label>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-floating">
+          <input
+            type="number"
+            class="form-control"
+            [ngClass]="{ 'is-invalid': labelCliente.get('stock')?.value > stock}"
+            id="stock"
+            formControlName="stock"
+          />
+          <label for="stock">Cantidad:</label>
+          <div id="validationServerUsernameFeedback" class="invalid-feedback">
+            La cantidad ingresada supera la disponibilidad en stock
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-floating">
+          <input type="text" class="form-control" id="stock" />
+          <label for="stock">Dirección:</label>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-floating">
+          @if (clienteEncontrado) {
+          <input
+            type="text"
+            class="form-control is-valid"
+            id="stock"
+            formControlName="client"
+            (keydown.enter)="buscarCliente()"
+          />
+          } @else {
+          <input
+            type="text"
+            class="form-control"
+            id="stock"
+            formControlName="client"
+            (keydown.enter)="buscarCliente()"
+          />
           }
-        </td>
-      </tr>
-      }
-    </tbody>
-  </table>
+          <label for="stock">Cliente:</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-floating">
+            @if (productoAgregadoToForm) {
+            <div class="form-floating">
+              <button
+                class="btn btn-success mt-3"
+                (click)="actualizarProducto()"
+              >
+                Actualizar producto
+              </button>
+            </div>
+            } @else {
+            <div class="form-floating">
+              <button class="btn btn-success mt-3">Actualizar producto</button>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-success mt-1">Confirmar pedido</button>
+  </form>
 </div>

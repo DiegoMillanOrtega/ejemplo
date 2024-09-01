@@ -11,9 +11,9 @@
   </header>
 
   @if (_loginService.isAuthenticated()) {
-    <app-dashboard />
-  } @else {
     <app-login />
+  } @else {
+    <app-dashboard />
   }
   <footer></footer>
 </div>

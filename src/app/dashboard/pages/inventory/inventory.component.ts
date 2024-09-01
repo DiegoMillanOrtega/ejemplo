@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 import { CategoryService } from '../../../service/category.service';
 import { Category } from '../../../model/category.model';
 import { AlertsService } from '../../../alerts/alerts.service';
+import { Pedido } from '../../../model/pedido.model';
 
 @Component({
   selector: 'app-inventory',
@@ -18,9 +19,11 @@ export class InventoryComponent implements OnInit {
 
   inventoryList: Inventory[] = [];
   categoryList: Category[] = [];
+  selectedProducts: Inventory[] = [];
   productName: string = '';
   productCategory: string = '';
   loading: boolean = true;
+  confirmedProductDelivery: boolean = false;
 
   async deleteProduct(id: number) {
     const resultado = await this.alerts.mostrarConfirmacion();
@@ -38,7 +41,8 @@ export class InventoryComponent implements OnInit {
             'El producto ha sido eliminado'
           );
         },
-        (error) => this.alerts.mostrarMensajeError('Error al eliminar el producto')
+        (error) =>
+          this.alerts.mostrarMensajeError('Error al eliminar el producto')
       );
     }
   }
@@ -87,5 +91,29 @@ export class InventoryComponent implements OnInit {
         this.loading = false;
       },
     });
+  }
+  toggleConfirmation(producto: Inventory) {
+    if (producto.stock > 0) {
+      producto.selected = !producto.selected;
+      if (producto.selected) {
+        this.selectedProducts.push(producto);
+      } else {
+        this.selectedProducts = this.selectedProducts.filter(
+          (p) => p.id !== producto.id
+        );
+      }
+    } else {
+      this.alerts.mostrarMensajeError(
+        'No hay suficiente stock para este producto.'
+      );
+    }
+  }
+
+  submitOrder() {
+    if (this.selectedProducts.length > 0) {
+      this._inventoryService.setSelectedProducts(this.selectedProducts);
+    } else {
+      this.alerts.mostrarMensajeError('No se han seleccionados productos.');
+    }
   }
 }

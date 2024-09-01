@@ -4,4 +4,5 @@ export interface Inventory {
     category: string;
     price: number | string;
     stock:    number;
+    selected?: boolean;
 }
