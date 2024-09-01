@@ -20,6 +20,7 @@ import { ListPedidosComponent } from './dashboard/pages/inventory/pedidos/list-p
 import { ClientComponent } from './dashboard/pages/client/client.component';
 import { AddClientComponent } from './dashboard/pages/client/add-client/add-client.component';
 import { DetailsClientComponent } from './dashboard/pages/client/details-client/details-client.component';
+import { ToastComponent } from './toast/toast.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { DetailsClientComponent } from './dashboard/pages/client/details-client/
     ClientComponent,
     AddClientComponent,
     DetailsClientComponent,
+    ToastComponent,
   ],
   imports: [
     BrowserModule,
