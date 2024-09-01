@@ -1,5 +1,5 @@
 .swal-wide {
-  width: 70%; /* Ajusta este valor según el tamaño deseado */
+  width: 75%; /* Ajusta este valor según el tamaño deseado */
   max-width: 90%; /* Evita que el modal se haga demasiado grande en pantallas pequeñas */
 }
 
