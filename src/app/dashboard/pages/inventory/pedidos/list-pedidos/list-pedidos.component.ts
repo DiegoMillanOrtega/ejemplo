@@ -1,4 +1,11 @@
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  HostListener,
+  OnInit,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { Pedido } from '../../../../../model/pedido.model';
 import { InventoryService } from '../../../../../service/inventory.service';
 import { Inventory } from '../../../../../model/inventory.model';
@@ -6,6 +13,8 @@ import { AlertsService } from '../../../../../alerts/alerts.service';
 import { ClientService } from '../../../../../service/client.service';
 import { Client } from '../../../../../model/client.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ToastComponent } from '../../../../../toast/toast.component';
+import { ToastsService } from '../../../../../service/toasts.service';
 
 @Component({
   selector: 'app-list-pedidos',
@@ -13,10 +22,31 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrl: './list-pedidos.component.css',
 })
 export class ListPedidosComponent implements OnInit {
+
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+
+    if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+      return; // No hacer nada si el foco está en un input o textarea
+    }
+
+    if (event.key === '1') {
+      this.showAndAddProducts();
+    }
+    if (event.key === '2') {
+      this.showSelectedProducts();
+    }
+    if (event.key === '3') {
+      this.showClients();
+    }
+    
+  }
+  
   private clientService = inject(ClientService);
   private inventoryService = inject(InventoryService);
   private alerts = inject(AlertsService);
   private cdr = inject(ChangeDetectorRef);
+  private toastService = inject(ToastsService);
 
   selectedProducts: Inventory[] = [];
   Products: Inventory[] = [];
@@ -39,7 +69,7 @@ export class ListPedidosComponent implements OnInit {
       category: ['', Validators.required],
       price: ['', Validators.required],
       stock: ['', Validators.required],
-      client: ['']
+      client: [''],
     });
   }
 
@@ -108,10 +138,9 @@ export class ListPedidosComponent implements OnInit {
     this.clientService.findClientById(Number(id)).subscribe({
       next: (data) => {
         if (data) {
-          (this.clienteEncontrado = true)
-        }
-        else {
-          (this.clienteEncontrado = false)
+          this.clienteEncontrado = true;
+        } else {
+          this.clienteEncontrado = false;
         }
       },
       error: (error) => {
@@ -133,7 +162,13 @@ export class ListPedidosComponent implements OnInit {
   }
 
   removerProductos(index: number) {
-    console.log(index);
+    this.toastService.showToast(
+      'Eliminado',
+      `El producto "${this.selectedProducts[index].product}" fue eliminado.`,
+      'danger',
+      2000
+    );
+
     this.selectedProducts.splice(index, 1);
     this.showSelectedProducts();
   }
@@ -169,6 +204,12 @@ export class ListPedidosComponent implements OnInit {
 
     if (this.productsNotSelected.length > 0) {
       this.showAndAddProducts();
+      this.toastService.showToast(
+        'Producto Agregado',
+        `El producto se agregó correctamente`,
+        'success',
+        2000
+      );
     } else {
       this.alerts.mostrarMensajeError('No hay productos');
     }
@@ -183,29 +224,38 @@ export class ListPedidosComponent implements OnInit {
     this.labelCliente.patchValue(product);
 
     const id = this.labelCliente.get('id')?.value;
-    const indexProducto = this.selectedProducts.findIndex(producto =>
-      producto.id === id
+    const indexProducto = this.selectedProducts.findIndex(
+      (producto) => producto.id === id
     );
-    
+
     this.labelCliente.get('id')?.disable();
     this.labelCliente.get('product')?.disable();
     this.labelCliente.get('price')?.disable();
-    
+
     this.stock = this.Products[indexProducto].stock;
 
     this.alerts.cerrarAlerta();
     this.productoAgregadoToForm = true;
-    console.log(this.stock)
+    console.log(this.stock);
   }
 
   actualizarProducto() {
     const id = this.labelCliente.get('id')?.value;
-    const index = this.selectedProducts.findIndex(producto =>
-      producto.id === id
+    const index = this.selectedProducts.findIndex(
+      (producto) => producto.id === id
     );
 
     this.selectedProducts[index].stock = this.labelCliente.get('stock')?.value;
-    this.alerts.mostrarMensajeExito('Actualizado','El producto fue actualizado con exito.')
+    this.toastService.showToast(
+      'Actualizado',
+      'El producto fue actualizado con exito',
+      'success',
+      2000
+    );
+    // this.alerts.mostrarMensajeExito(
+    //   'Actualizado',
+    //   'El producto fue actualizado con exito.'
+    // );
   }
 
   showClients() {
@@ -244,10 +294,11 @@ export class ListPedidosComponent implements OnInit {
         this.removerProductos.bind(this),
         [
           {
-            label:'Detalles',
-            callback: (trElement: HTMLTableRowElement) => this.addProductToForm(trElement),
-            class:'btn-info'
-          }
+            label: 'Detalles',
+            callback: (trElement: HTMLTableRowElement) =>
+              this.addProductToForm(trElement),
+            class: 'btn-info',
+          },
         ]
       );
     } else {
@@ -277,12 +328,22 @@ export class ListPedidosComponent implements OnInit {
               this.addProductToSelection(trElement),
             class: 'btn-info',
           },
-        ]
+        ],
+        6,
+        true
       );
     } else {
       this.alerts.mostrarMensajeError('No hay productos');
     }
   }
 
+  onKeydown(event: KeyboardEvent) {
+    switch (event.key) {
+      case '1':
+        console.log('hola')
+        this.showAndAddProducts();
+        break;
+      // Puedes manejar más teclas aquí si es necesario
+    }
+  }
 }
- 
