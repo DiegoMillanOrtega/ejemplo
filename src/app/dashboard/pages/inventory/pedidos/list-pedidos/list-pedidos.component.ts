@@ -15,6 +15,10 @@ import { Client } from '../../../../../model/client.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastComponent } from '../../../../../toast/toast.component';
 import { ToastsService } from '../../../../../service/toasts.service';
+import { PedidoService } from '../../../../../service/pedido.service';
+import { PedidoDetalleService } from '../../../../../service/pedido-detalle.service';
+import { forkJoin } from 'rxjs';
+import { PedidoRequest } from '../../../../../model/pedido-request';
 
 @Component({
   selector: 'app-list-pedidos',
@@ -22,11 +26,12 @@ import { ToastsService } from '../../../../../service/toasts.service';
   styleUrl: './list-pedidos.component.css',
 })
 export class ListPedidosComponent implements OnInit {
-
   @HostListener('window:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-
-    if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+    if (
+      event.target instanceof HTMLInputElement ||
+      event.target instanceof HTMLTextAreaElement
+    ) {
       return; // No hacer nada si el foco está en un input o textarea
     }
 
@@ -39,11 +44,12 @@ export class ListPedidosComponent implements OnInit {
     if (event.key === '3') {
       this.showClients();
     }
-    
   }
-  
+
   private clientService = inject(ClientService);
   private inventoryService = inject(InventoryService);
+  private pedidoService = inject(PedidoService);
+  private pedidoDetalleService = inject(PedidoDetalleService);
   private alerts = inject(AlertsService);
   private cdr = inject(ChangeDetectorRef);
   private toastService = inject(ToastsService);
@@ -53,6 +59,8 @@ export class ListPedidosComponent implements OnInit {
   productsNotSelected: Inventory[] = [];
   listPedidos: Pedido[] = [];
   clients: Client[] = [];
+  productoIds: number[] = [];
+  cantidades: number[] = [];
 
   clientSelected: string = '';
   stock: number = 0;
@@ -68,8 +76,10 @@ export class ListPedidosComponent implements OnInit {
       product: ['', Validators.required],
       category: ['', Validators.required],
       price: ['', Validators.required],
+      address: ['', Validators.required],
       stock: ['', Validators.required],
-      client: [''],
+      client: ['', Validators.required],
+      paymentType: ['', Validators.required],
     });
   }
 
@@ -115,6 +125,41 @@ export class ListPedidosComponent implements OnInit {
     });
   }
 
+  sendPedido() {
+
+    console.log(this.clients[0])
+    let pedido: Pedido = {
+      price: this.labelCliente.get('price')?.value,
+      address: this.labelCliente.get('address')?.value,
+      client: this.clients[0],
+      paymentType: this.labelCliente.get('paymentType')?.value,
+    };
+
+    for (let index = 0; index < this.selectedProducts.length; index++) {
+      this.productoIds.push(this.selectedProducts[index].id);
+      this.cantidades.push(this.selectedProducts[index].stock);
+    }
+
+    const pedidoRequest: PedidoRequest = {
+      pedido: pedido,
+      producto: this.selectedProducts,
+      cantidades: this.cantidades,
+    }
+    console.log(pedidoRequest)
+    this.pedidoService.savePedido(pedidoRequest).subscribe(
+      response => {
+        console.log('Pedido guardado con exito ', response)
+      },
+      error => {
+        console.error('Error al guardar el pedido', error)
+      }
+    )
+    // Crear el objeto pedido con la información básica
+    
+  
+  }
+
+  
   selectedCliente(trElement: HTMLTableRowElement): void {
     const index = Array.from(trElement.parentNode?.children ?? []).indexOf(
       trElement
@@ -312,6 +357,7 @@ export class ListPedidosComponent implements OnInit {
       const columns = [
         { key: 'id', title: 'Id' },
         { key: 'product', title: 'Producto' },
+        { key: 'category', title: 'Categoria'},
         { key: 'stock', title: 'Cantidad' },
         { key: 'price', title: 'Precio' },
       ];
@@ -340,7 +386,7 @@ export class ListPedidosComponent implements OnInit {
   onKeydown(event: KeyboardEvent) {
     switch (event.key) {
       case '1':
-        console.log('hola')
+        console.log('hola');
         this.showAndAddProducts();
         break;
       // Puedes manejar más teclas aquí si es necesario

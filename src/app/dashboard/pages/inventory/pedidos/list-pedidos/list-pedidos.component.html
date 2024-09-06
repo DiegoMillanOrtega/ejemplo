@@ -29,17 +29,7 @@
 <div>
   <form [formGroup]="labelCliente">
     <div class="row">
-      <div class="col-md-6">
-        <div class="form-floating">
-          <input
-            type="text"
-            class="form-control"
-            id="id"
-            formControlName="id"
-          />
-          <label for="id">Id del producto:</label>
-        </div>
-      </div>
+      
       <div class="col-md-6">
         <div class="form-floating">
           <input
@@ -51,8 +41,7 @@
           <label for="product">Nombre del producto:</label>
         </div>
       </div>
-    </div>
-    <div class="row">
+
       <div class="col-md-6">
         <div class="form-floating">
           <input
@@ -64,6 +53,11 @@
           <label for="precio">Precio:</label>
         </div>
       </div>
+
+    </div>
+
+    <div class="row">
+      
       <div class="col-md-6">
         <div class="form-floating">
           <input
@@ -79,16 +73,20 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="row">
       <div class="col-md-6">
         <div class="form-floating">
-          <input type="text" class="form-control" id="stock" />
+          <input type="text" class="form-control" id="stock" formControlName="address"/>
           <label for="stock">Dirección:</label>
         </div>
       </div>
 
+    </div>
+
+    
+
+    <div class="row">
+      
       <div class="col-md-6">
         <div class="form-floating">
           @if (clienteEncontrado) {
@@ -101,17 +99,26 @@
           />
           } @else {
           <input
-            type="text"
+            type="number"
             class="form-control"
             id="stock"
             formControlName="client"
             (keydown.enter)="buscarCliente()"
-          />
+            />
           }
           <label for="stock">Cliente:</label>
         </div>
       </div>
+
+      <div class="col-md-6">
+        <div class="form-floating">
+          <input type="text" class="form-control" id="stock" formControlName="paymentType"/>
+          <label for="stock">Forma de pago:</label>
+        </div>
+      </div>
+
       <div class="row">
+        
         <div class="col-md-6">
           <div class="form-floating">
             @if (productoAgregadoToForm) {
@@ -133,6 +140,8 @@
       </div>
     </div>
 
-    <button class="btn btn-success mt-1">Confirmar pedido</button>
+    <button class="btn btn-success mt-1"
+    (click)="sendPedido()"
+    >Confirmar pedido</button>
   </form>
 </div>
