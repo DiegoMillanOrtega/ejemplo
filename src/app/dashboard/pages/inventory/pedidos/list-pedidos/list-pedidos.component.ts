@@ -13,6 +13,10 @@ import { AlertsService } from '../../../../../alerts/alerts.service';
 import { ClientService } from '../../../../../service/client.service';
 import { Client } from '../../../../../model/client.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { PedidoRequest } from '../../../../../model/pedido-request';
+import { PedidoService } from '../../../../../service/pedido.service';
+import { PedidoDetalleService } from '../../../../../service/pedido-detalle.service';
+import { ToastsService } from '../../../../../service/toasts.service';
 
 @Component({
   selector: 'app-list-pedidos',
