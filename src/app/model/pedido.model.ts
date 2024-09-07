@@ -1,11 +1,10 @@
-import { Client } from "./client.model";
-import { PedidoDetalle } from "./pedidoDetalle.model";
-
 export interface Pedido {
-    id?: number;
+    id:       number | string;
+    product:  string;
+    category: string;
     price: number | string;
+    stock:    number;
     address: string;
-    client: Client; // Enviar solo el ID del cliente
-    paymentType: string;
-    pedidoDetalles?: PedidoDetalle[];
+    client: string;
+    confirmedDelivery: boolean;
 }

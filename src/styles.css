@@ -1,13 +1,1 @@
-.swal-wide {
-  width: 75%; /* Ajusta este valor según el tamaño deseado */
-  max-width: 90%; /* Evita que el modal se haga demasiado grande en pantallas pequeñas */
-}
-
-.swal-wide .table-responsive {
-  max-height: 400px; /* Controla la altura de la tabla */
-  overflow-y: auto; /* Agrega un scroll si la tabla es muy alta */
-}
-
-.swal-wide .table {
-  word-wrap: break-word;
-}
+/* You can add global styles to this file, and also import other style files */

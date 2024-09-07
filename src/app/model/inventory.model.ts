@@ -1,10 +1,7 @@
-import { Category } from "./category.model";
-
 export interface Inventory {
     id:       number;
     product:  string;
-    category: Category;
+    category: string;
     price: number | string;
     stock:    number;
-    selected?: boolean;
 }

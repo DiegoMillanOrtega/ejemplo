@@ -22,7 +22,7 @@ const routes: Routes = [
   { path: 'inventory/pedido/:productId/:product', component: PedidosComponent},
   { path: 'category', component: CategoryComponent},
   { path: 'category/newCategory', component: AddCategoryComponent},
-  { path: 'inventory/listPedidos', component: ListPedidosComponent},
+  { path: 'listPedidos', component: ListPedidosComponent},
   { path: 'client', component: ClientComponent},
   { path: 'client/addClient', component: AddClientComponent},
   { path: 'client/details/:id/:client', component: DetailsClientComponent},

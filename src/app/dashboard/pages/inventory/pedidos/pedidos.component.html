@@ -87,7 +87,7 @@
         <ul class="dropdown-menu" style="max-height: 110px; overflow-y: auto">
           @for (client of nameClients; track $index) {
           <li style="cursor: pointer">
-            <a class="dropdown-item" >{{
+            <a class="dropdown-item" (click)="selectedClient(client)">{{
               client
             }}</a>
           </li>
