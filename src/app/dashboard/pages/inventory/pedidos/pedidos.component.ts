@@ -116,7 +116,7 @@ export class PedidosComponent {
         this.pedidoForm.get('product')?.enable();
         this.pedidoForm.get('price')?.enable();
 
-        this.pedidoService.savePedido(this.pedidoForm.value).subscribe(
+        /*this.pedidoService.savePedido(this.pedidoForm.value).subscribe(
           response => {
             console.log(response);
 
@@ -142,12 +142,12 @@ export class PedidosComponent {
               timer: 1300,
             })
           }
-        )
+        )*/
       }
     });
   }
 
-  selectedClient(client: string) {
+  /*selectedClient(client: string) {
     this.pedidoForm.get('client')?.setValue(client);
-  }
+  }*/
 }

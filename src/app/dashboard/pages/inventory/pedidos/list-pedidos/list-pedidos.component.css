@@ -1,0 +1,21 @@
+form {
+    display: grid;
+    padding: 20px 40px 40px;
+    row-gap: 25px;
+}
+label {
+    font-weight: bold;
+}
+header {
+    padding: 15px;
+    border-bottom: 2px solid black;
+    font-weight: bold;
+    background-color: lightgray;
+}
+.colorFont{
+    font-weight: bold;
+}
+.d-flex {   
+    align-items: center;
+    column-gap: 15px;
+}

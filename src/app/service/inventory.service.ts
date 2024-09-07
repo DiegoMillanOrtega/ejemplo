@@ -10,6 +10,7 @@ export class InventoryService {
 
   private apiUrl: string = 'http://localhost:8080/inventory';
   private http = inject(HttpClient);
+  private selectedProducts: Inventory[] = [];
 
   getInventoryList(): Observable<Inventory[]> {
     return this.http.get<Inventory[]>(`${this.apiUrl}/getInventory`)
@@ -33,5 +34,15 @@ export class InventoryService {
 
   deleteProductId(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/deleteProduct/${id}`, {responseType: 'text'})
+  }
+
+  getSelectedProducts() {
+    return this.selectedProducts;
+  }
+
+  setSelectedProducts(selectedProducts: Inventory[]) {
+    if (selectedProducts.length > 0) {
+      this.selectedProducts = selectedProducts;
+    }
   }
 }
