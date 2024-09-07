@@ -68,24 +68,14 @@
         <button type="button" class="btn btn-primary" routerLink="addProduct">
           <app-icons-svg [nombreIcono]="'add'" />
         </button>
-        @if (selectedProducts.length > 0) {        
-          <button
+
+        <button
           class="btn btn-secondary"
           (click)="submitOrder()"
           routerLink="listPedidos"
-          >
-            <app-icons-svg [nombreIcono]="'delivery'"/>
-          </button>
-        }
-        @else {
-          <button
-          class="btn btn-secondary"
-          (click)="submitOrder()"
-          >
-            <app-icons-svg [nombreIcono]="'delivery'"/>
-          </button>
-        }
-
+        >
+          <app-icons-svg [nombreIcono]="'delivery'" />
+        </button>
       </div>
     </div>
   </nav>
@@ -117,11 +107,15 @@
       </thead>
       <tbody>
         @for (product of inventoryList; track $index) {
-        <tr [ngClass]="{ 'table-danger': product.stock <= 4
-        , 'table-success': product.selected}">
+        <tr
+          [ngClass]="{
+            'table-danger': product.stock <= 4,
+            'table-success': product.selected
+          }"
+        >
           <th scope="row">{{ product.id }}</th>
           <td>{{ product.product }}</td>
-          <td>{{ product.category }}</td>
+          <td>{{ product.category.category }}</td>
           <td>{{ product.price | currency }}</td>
           <td>{{ product.stock }}</td>
           <td>

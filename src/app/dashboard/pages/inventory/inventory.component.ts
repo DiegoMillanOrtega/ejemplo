@@ -112,8 +112,6 @@ export class InventoryComponent implements OnInit {
   submitOrder() {
     if (this.selectedProducts.length > 0) {
       this._inventoryService.setSelectedProducts(this.selectedProducts);
-    } else {
-      this.alerts.mostrarMensajeError('No se han seleccionados productos.');
     }
   }
 }
