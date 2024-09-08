@@ -24,7 +24,6 @@ import { ToastsService } from '../../../../../service/toasts.service';
   styleUrl: './list-pedidos.component.css',
 })
 export class ListPedidosComponent implements OnInit {
-
   @HostListener('window:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (
@@ -44,7 +43,6 @@ export class ListPedidosComponent implements OnInit {
       this.showClients();
     }
   }
-
 
   private clientService = inject(ClientService);
   private inventoryService = inject(InventoryService);
@@ -126,8 +124,6 @@ export class ListPedidosComponent implements OnInit {
   }
 
   sendPedido() {
-
-    console.log(this.clients[0])
     let pedido: Pedido = {
       price: this.labelCliente.get('price')?.value,
       address: this.labelCliente.get('address')?.value,
@@ -144,22 +140,19 @@ export class ListPedidosComponent implements OnInit {
       pedido: pedido,
       productos: this.selectedProducts,
       cantidades: this.cantidades,
-    }
-    console.log(pedidoRequest)
+    };
+    console.log(pedidoRequest);
     this.pedidoService.savePedido(pedidoRequest).subscribe(
-      response => {
-        console.log('Pedido guardado con exito ', response)
+      (response) => {
+        console.log('Pedido guardado con exito ', response);
       },
-      error => {
-        console.error('Error al guardar el pedido', error)
+      (error) => {
+        console.error('Error al guardar el pedido', error);
       }
-    )
+    );
     // Crear el objeto pedido con la información básica
-    
-  
   }
 
-  
   selectedCliente(trElement: HTMLTableRowElement): void {
     const index = Array.from(trElement.parentNode?.children ?? []).indexOf(
       trElement
@@ -264,43 +257,50 @@ export class ListPedidosComponent implements OnInit {
     const index = Array.from(trElement.parentNode?.children ?? []).indexOf(
       trElement
     );
-
-    const product = this.selectedProducts[index];
+    // Hacemos una copia del producto antes de asignarlo al form
+    const product = { ...this.selectedProducts[index] };
     this.labelCliente.patchValue(product);
 
     const id = this.labelCliente.get('id')?.value;
-    const indexProducto = this.selectedProducts.findIndex(
-      (producto) => producto.id === id
+
+    // Obtener el indexProducts
+    const indexProducto = this.Products.findIndex(
+      (products) => products.id === id
     );
 
+    // Asignar el stock max
+    this.stock = this.Products[indexProducto].stock;
+
+    // Deshabilitar los inputs
     this.labelCliente.get('id')?.disable();
     this.labelCliente.get('product')?.disable();
     this.labelCliente.get('price')?.disable();
 
-    this.stock = this.Products[indexProducto].stock;
-
     this.alerts.cerrarAlerta();
     this.productoAgregadoToForm = true;
-    console.log(this.stock);
   }
 
   actualizarProducto() {
     const id = this.labelCliente.get('id')?.value;
+
+    // Actualizar el stock en el selectedProducts
     const index = this.selectedProducts.findIndex(
-      (producto) => producto.id === id
+      (selected) => selected.id === id
     );
 
-    this.selectedProducts[index].stock = this.labelCliente.get('stock')?.value;
-    this.toastService.showToast(
-      'Actualizado',
-      'El producto fue actualizado con exito',
-      'success',
-      2000
-    );
-    // this.alerts.mostrarMensajeExito(
-    //   'Actualizado',
-    //   'El producto fue actualizado con exito.'
-    // );
+    if (index !== -1) {
+      this.selectedProducts[index] = {
+        ...this.selectedProducts[index], // Copiamos las propiedades del producto
+        stock: this.labelCliente.get('stock')?.value, // Actualizamos solo el stock
+      };
+
+      this.toastService.showToast(
+        'Actualizado',
+        `El producto "${this.selectedProducts[index].product}" fue actualizado con éxito`,
+        'success',
+        2000
+      );
+    }
   }
 
   showClients() {
@@ -333,7 +333,7 @@ export class ListPedidosComponent implements OnInit {
         { key: 'stock', title: 'Cantidad' },
         { key: 'price', title: 'Precio' },
       ];
-      
+
       this.alerts.mostrarTabla(
         this.selectedProducts,
         'Productos Seleccionados',
@@ -359,7 +359,7 @@ export class ListPedidosComponent implements OnInit {
       const columns = [
         { key: 'id', title: 'Id' },
         { key: 'product', title: 'Producto' },
-        { key: 'category', title: 'Categoria'},
+        { key: 'category', title: 'Categoria' },
         { key: 'stock', title: 'Cantidad' },
         { key: 'price', title: 'Precio' },
       ];
@@ -384,6 +384,4 @@ export class ListPedidosComponent implements OnInit {
       this.alerts.mostrarMensajeError('No hay productos');
     }
   }
-
 }
- 
