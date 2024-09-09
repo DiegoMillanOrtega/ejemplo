@@ -13,21 +13,6 @@ import { Pedido } from '../../../model/pedido.model';
   styleUrl: './inventory.component.css',
 })
 export class InventoryComponent implements OnInit {
-
-  @HostListener('window:keydown', ['$event'])
-  handleKeyboardEvent(event: KeyboardEvent) {
-
-    if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
-      return; // No hacer nada si el foco está en un input o textarea
-    }
-
-    console.log(event)
-
-    // if (event.key === 'control + ') {
-    //   ;
-    // }
-  }
-
   private _inventoryService = inject(InventoryService);
   private categoryService = inject(CategoryService);
   private alerts = inject(AlertsService);
@@ -127,8 +112,6 @@ export class InventoryComponent implements OnInit {
   submitOrder() {
     if (this.selectedProducts.length > 0) {
       this._inventoryService.setSelectedProducts(this.selectedProducts);
-    } else {
-      this.alerts.mostrarMensajeError('No se han seleccionados productos.');
     }
   }
 }

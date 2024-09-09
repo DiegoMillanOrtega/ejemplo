@@ -5,6 +5,6 @@ import { PedidoDetalle } from './pedidoDetalle.model';
 
 export interface PedidoRequest {
   pedido: Pedido;
-  producto: Inventory[];
+  productos: Inventory[];
   cantidades: number[];
 }
