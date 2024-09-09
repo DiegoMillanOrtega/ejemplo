@@ -47,10 +47,10 @@
           <input
             type="number"
             class="form-control"
-            id="precio"
+            id="price"
             formControlName="price"
           />
-          <label for="precio">Precio:</label>
+          <label for="price">Precio:</label>
         </div>
       </div>
 
@@ -61,22 +61,28 @@
       <div class="col-md-6">
         <div class="form-floating">
           <input
-            type="number"
-            class="form-control"
-            [ngClass]="{ 'is-invalid': labelCliente.get('stock')?.value > stock}"
-            id="stock"
-            formControlName="stock"
-          />
+              type="number"
+              class="form-control"
+              [ngClass]="{ 'is-invalid': labelCliente.get('stock')?.value > stock}"
+              id="stock"
+              (keydown.Enter)="actualizarProducto()"
+              required
+              formControlName="stock"
+            />
           <label for="stock">Cantidad a Vender:</label>
-          <div id="validationServerUsernameFeedback" class="invalid-feedback">
-            La cantidad ingresada supera la disponibilidad en stock
-          </div>
+
+          @if (stockModificado && labelCliente.get('stock')?.hasError('stockExceeded')) {
+
+            <div id="validationServerUsernameFeedback" class="invalid-feedback">
+              La cantidad ingresada supera la disponibilidad en stock
+            </div>
+          }
         </div>
       </div>
 
       <div class="col-md-6">
         <div class="form-floating">
-          <input type="text" class="form-control" id="stock" formControlName="address"/>
+          <input type="text" class="form-control" id="stock" required formControlName="address"/>
           <label for="stock">Dirección:</label>
         </div>
       </div>
@@ -93,7 +99,8 @@
           <input
             type="text"
             class="form-control is-valid"
-            id="stock"
+            id="client"
+            required
             formControlName="client"
             (keydown.enter)="buscarCliente()"
           />
@@ -101,25 +108,26 @@
           <input
             type="number"
             class="form-control"
-            id="stock"
+            id="client"
+            required
             formControlName="client"
             (keydown.enter)="buscarCliente()"
             />
           }
-          <label for="stock">Cliente:</label>
+          <label for="client">Cliente:</label>
         </div>
       </div>
 
       <div class="col-md-6">
         <div class="form-floating">
-          <input type="text" class="form-control" id="stock" formControlName="paymentType"/>
-          <label for="stock">Forma de pago:</label>
+          <input type="text" class="form-control" id="formaPago" required formControlName="paymentType"/>
+          <label for="formaPago">Forma de pago:</label>
         </div>
       </div>
 
       <div class="row">
         
-        <div class="col-md-6">
+        <!-- <div class="col-md-6">
           <div class="form-floating">
             @if (productoAgregadoToForm) {
             <div class="form-floating">
@@ -136,12 +144,15 @@
             </div>
             }
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
 
     <button class="btn btn-success mt-1"
-    (click)="sendPedido()"
-    >Confirmar pedido</button>
+      (click)="sendPedido()"
+      [disabled]="labelCliente.invalid || (stockModificado && labelCliente.get('stock')?.hasError('stockExceeded'))"
+      >Confirmar pedido
+    </button>
+
   </form>
 </div>

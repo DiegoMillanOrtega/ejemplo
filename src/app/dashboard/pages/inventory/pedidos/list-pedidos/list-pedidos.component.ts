@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   ChangeDetectorRef,
   Component,
   HostListener,
@@ -12,7 +13,13 @@ import { Inventory } from '../../../../../model/inventory.model';
 import { AlertsService } from '../../../../../alerts/alerts.service';
 import { ClientService } from '../../../../../service/client.service';
 import { Client } from '../../../../../model/client.model';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { PedidoRequest } from '../../../../../model/pedido-request';
 import { PedidoService } from '../../../../../service/pedido.service';
 import { PedidoDetalleService } from '../../../../../service/pedido-detalle.service';
@@ -23,7 +30,7 @@ import { ToastsService } from '../../../../../service/toasts.service';
   templateUrl: './list-pedidos.component.html',
   styleUrl: './list-pedidos.component.css',
 })
-export class ListPedidosComponent implements OnInit {
+export class ListPedidosComponent implements OnInit, AfterViewInit {
   @HostListener('window:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (
@@ -67,6 +74,7 @@ export class ListPedidosComponent implements OnInit {
   confirmedDelivery: boolean = false;
   clienteEncontrado: boolean = false;
   productoAgregadoToForm: boolean = false;
+  stockModificado = false; // Flag para controlar si el stock ha sido modificado
 
   constructor(private form: FormBuilder) {
     this.labelCliente = form.group({
@@ -75,9 +83,18 @@ export class ListPedidosComponent implements OnInit {
       category: ['', Validators.required],
       price: ['', Validators.required],
       address: ['', Validators.required],
-      stock: ['', Validators.required],
+      stock: ['', [Validators.required, this.stockValidator.bind(this)]],
       paymentType: ['', Validators.required],
-      client: ['']
+      client: ['', Validators.required],
+    });
+  }
+
+  ngAfterViewInit(): void {
+    this.labelCliente.get('stock')?.valueChanges.subscribe((value) => {
+      if (this.stockModificado !== true) {
+        this.stockModificado = true;
+        this.labelCliente.get('stock')?.updateValueAndValidity();
+      }
     });
   }
 
@@ -121,6 +138,15 @@ export class ListPedidosComponent implements OnInit {
         (selected) => selected.id === product.id
       );
     });
+  }
+
+  // Validador personalizado para el stock
+  stockValidator(control: AbstractControl): ValidationErrors | null {
+    if (this.stockModificado && control.value > this.stock) {
+      console.log('Control.value: ', control.value, 'this.stock: ', this.stock);
+      return { stockExceeded: true }; // Si el stock ingresado supera el disponible, devuelve un error
+    }
+    return null; // Si es válido, no hay errores
   }
 
   sendPedido() {
@@ -268,10 +294,12 @@ export class ListPedidosComponent implements OnInit {
       (products) => products.id === id
     );
 
-    // Asignar el stock max
+    // Actualiza el valor del stock con el stock original
     this.stock = this.Products[indexProducto].stock;
+    // Actualiza el campo 'stock' en el formulario con el valor original
+    this.labelCliente.get('stock')?.setValue(this.stock);
 
-    // Deshabilitar los inputs
+    // Deshabilitar los campos del producto que no se deben modificar
     this.labelCliente.get('id')?.disable();
     this.labelCliente.get('product')?.disable();
     this.labelCliente.get('price')?.disable();
@@ -281,25 +309,29 @@ export class ListPedidosComponent implements OnInit {
   }
 
   actualizarProducto() {
-    const id = this.labelCliente.get('id')?.value;
+    const stockControl = this.labelCliente.get('stock');
 
-    // Actualizar el stock en el selectedProducts
-    const index = this.selectedProducts.findIndex(
-      (selected) => selected.id === id
-    );
+    if (stockControl && stockControl.valid) {
+      const id = this.labelCliente.get('id')?.value;
 
-    if (index !== -1) {
-      this.selectedProducts[index] = {
-        ...this.selectedProducts[index], // Copiamos las propiedades del producto
-        stock: this.labelCliente.get('stock')?.value, // Actualizamos solo el stock
-      };
-
-      this.toastService.showToast(
-        'Actualizado',
-        `El producto "${this.selectedProducts[index].product}" fue actualizado con éxito`,
-        'success',
-        2000
+      // Actualizar el stock en el selectedProducts
+      const index = this.selectedProducts.findIndex(
+        (selected) => selected.id === id
       );
+
+      if (index !== -1) {
+        this.selectedProducts[index] = {
+          ...this.selectedProducts[index], // Copiamos las propiedades del producto
+          stock: this.labelCliente.get('stock')?.value, // Actualizamos solo el stock
+        };
+
+        this.toastService.showToast(
+          'Actualizado',
+          `El producto "${this.selectedProducts[index].product}" fue actualizado con éxito`,
+          'success',
+          2000
+        );
+      }
     }
   }
 
