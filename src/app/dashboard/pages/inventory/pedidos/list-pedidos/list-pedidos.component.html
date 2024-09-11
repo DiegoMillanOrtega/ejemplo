@@ -30,12 +30,12 @@
   <form [formGroup]="labelCliente">
     <div class="row">
       
-      
       <div class="col-md-6">
         <div class="form-floating">
           <input
-            type="search"
+            type="text"
             class="form-control"
+            [ngClass]="{ 'is-valid': productoAgregadoAlaForma}"
             id="product"
             formControlName="product"
           />
@@ -43,12 +43,12 @@
         </div>
       </div>
 
-
       <div class="col-md-6">
         <div class="form-floating">
           <input
             type="number"
             class="form-control"
+            [ngClass]="{ 'is-valid': productoAgregadoAlaForma}"
             id="price"
             formControlName="price"
           />
@@ -60,17 +60,15 @@
 
     <div class="row">
       
-
-    </div>
-
-    <div class="row">
-      
       <div class="col-md-6">
         <div class="form-floating">
           <input
               type="number"
               class="form-control"
-              [ngClass]="{ 'is-invalid': labelCliente.get('stock')?.value > stock}"
+              [ngClass]="{
+                'is-invalid': labelCliente.get('stock')?.value > stock,
+                'is-valid': productoAgregadoAlaForma
+               }"
               id="stock"
               (keydown.Enter)="actualizarProducto()"
               required
@@ -81,7 +79,7 @@
           @if (stockModificado && labelCliente.get('stock')?.hasError('stockExceeded')) {
 
             <div id="validationServerUsernameFeedback" class="invalid-feedback">
-              La cantidad ingresada supera la disponibilidad en stock
+              La cantidad ingresada a vender supera la disponibilidad
             </div>
           }
         </div>
@@ -89,17 +87,10 @@
 
       <div class="col-md-6">
         <div class="form-floating">
-          <input type="text" class="form-control" id="stock" required formControlName="address"/>
+          <input type="text" class="form-control"  [ngClass]="{'is-valid': labelCliente.get('address')?.valid}" id="stock" required formControlName="address"/>
           <label for="stock">Dirección:</label>
         </div>
       </div>
-
-    </div>
-
-    
-
-    <div class="row">
-      
 
     </div>
 
@@ -127,17 +118,21 @@
             formControlName="client"
             (keydown.enter)="buscarCliente()"
             />
-            />
           }
           <label for="client">Cliente:</label>
         </div>
       </div>
 
       <div class="col-md-6">
-        <div class="form-floating">
-          <input type="text" class="form-control" id="formaPago" required formControlName="paymentType"/>
-          <label for="formaPago">Forma de pago:</label>
-        </div>
+        <select class="form-select"  [ngClass]="{'is-valid': labelCliente.get('paymentType')?.value}" aria-label="Default select example" formControlName="paymentType">
+          <option value="" disabled selected>Seleccione una Forma de Pago</option>
+          @for (formaPago of formasDePago; track $index) {
+            <option value="{{ formaPago.formaPago }}">{{ formaPago.formaPago }}</option>
+          }
+        </select>
+        @if (this.labelCliente.get('paymentType')?.invalid && this.labelCliente.get('paymentType')?.touched) {
+          <div class="text-danger">Debe seleccionar una forma de pago.</div>
+        }
       </div>
 
       <div class="row">

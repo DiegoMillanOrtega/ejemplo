@@ -24,10 +24,8 @@ import { PedidoRequest } from '../../../../../model/pedido-request';
 import { PedidoService } from '../../../../../service/pedido.service';
 import { PedidoDetalleService } from '../../../../../service/pedido-detalle.service';
 import { ToastsService } from '../../../../../service/toasts.service';
-import { PedidoService } from '../../../../../service/pedido.service';
-import { PedidoDetalleService } from '../../../../../service/pedido-detalle.service';
-import { forkJoin } from 'rxjs';
-import { PedidoRequest } from '../../../../../model/pedido-request';
+
+
 
 @Component({
   selector: 'app-list-pedidos',
@@ -70,12 +68,21 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   clients: Client[] = [];
   productoIds: number[] = [];
   cantidades: number[] = [];
-
+  formasDePago: { id: number, formaPago: string }[] = [
+    { id: 1, formaPago: 'CONTADO' },
+    { id: 2, formaPago: 'TARJETA DE CRÉDITO' },
+    { id: 3, formaPago: 'TRANSFERENCIA BANCARIA' },
+    { id: 4, formaPago: 'PAYPAL' }
+  ];
+  
+  valorTotalPedido: number = 0;
+  stockAnterior: number = 0;
   clientSelected: string = '';
   stock: number = 0;
   //clienteABuscar: number = 0;
   labelCliente: FormGroup;
   confirmedDelivery: boolean = false;
+  productoAgregadoAlaForma: boolean = false;
   clienteEncontrado: boolean = false;
   productoAgregadoToForm: boolean = false;
   stockModificado = false; // Flag para controlar si el stock ha sido modificado
@@ -106,6 +113,7 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
     this.loadProducts();
     this.loadListPedidos();
     this.loadClients();
+    
   }
 
   loadListPedidos(): void {
@@ -188,13 +196,10 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
       trElement
     );
     const cliente = this.clients[index];
-    const clientDetails = {
-      client: cliente.name + ' ' + cliente.lastName,
-    };
 
     if (!this.clients.some((p) => p.id === index)) {
-      this.labelCliente.patchValue(clientDetails);
-      this.labelCliente.get('client')?.disable();
+      this.labelCliente.get('client')?.setValue(cliente.id);
+      this.clienteEncontrado = true;
       this.clients.splice(index, 1);
       this.alerts.cerrarAlerta();
     }
@@ -290,6 +295,7 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
     // Hacemos una copia del producto antes de asignarlo al form
     const product = { ...this.selectedProducts[index] };
     this.labelCliente.patchValue(product);
+    this.productoAgregadoAlaForma = true;
 
     const id = this.labelCliente.get('id')?.value;
 
@@ -337,6 +343,12 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
         );
       }
     }
+  }
+
+  calcularPrecioXStock(precio: number, stock: number) {
+    const totalPrecioXStock = precio * stock;
+    this.valorTotalPedido += totalPrecioXStock;
+    console.log(this.valorTotalPedido)
   }
 
   showClients() {
