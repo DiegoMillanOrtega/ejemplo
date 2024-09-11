@@ -25,6 +25,7 @@ export class DetailsProductsComponent implements OnInit{
   product?: string;
   detailsProduct: FormGroup;
   categoryList: Category[] = [];
+  category?: Category;
   loading: boolean = true;
 
   constructor(private form: FormBuilder) {
@@ -45,6 +46,7 @@ export class DetailsProductsComponent implements OnInit{
       this._inventoryService.getProductId(this.productId).subscribe(
         response => {
           this.detailsProduct?.patchValue(response);
+          this.detailsProduct.get('category')?.setValue(response.category.category);
           this.detailsProduct.get('id')?.disable();
         },
         error => console.error(error)
@@ -54,6 +56,7 @@ export class DetailsProductsComponent implements OnInit{
     this.categoryService.getCategoryList().subscribe(
       response => {
         this.categoryList = response;
+        
       },
       error => console.error('error al obtener lista de categoria', error)
     );
