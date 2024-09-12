@@ -127,7 +127,7 @@
         <select class="form-select"  [ngClass]="{'is-valid': labelCliente.get('paymentType')?.value}" aria-label="Default select example" formControlName="paymentType">
           <option value="" disabled selected>Seleccione una Forma de Pago</option>
           @for (formaPago of formasDePago; track $index) {
-            <option value="{{ formaPago.formaPago }}">{{ formaPago.formaPago }}</option>
+            <option  value="{{ formaPago.formaPagoID }}">{{ formaPago.descrip }}</option>
           }
         </select>
         @if (this.labelCliente.get('paymentType')?.invalid && this.labelCliente.get('paymentType')?.touched) {

@@ -24,6 +24,8 @@ import { PedidoRequest } from '../../../../../model/pedido-request';
 import { PedidoService } from '../../../../../service/pedido.service';
 import { PedidoDetalleService } from '../../../../../service/pedido-detalle.service';
 import { ToastsService } from '../../../../../service/toasts.service';
+import { FormaPagoService } from '../../../../../service/forma-pago.service';
+import { FormaPago } from '../../../../../model/forma-pago.model';
 
 
 
@@ -60,6 +62,7 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   private alerts = inject(AlertsService);
   private cdr = inject(ChangeDetectorRef);
   private toastService = inject(ToastsService);
+  private formaPagoService = inject(FormaPagoService);
 
   selectedProducts: Inventory[] = [];
   Products: Inventory[] = [];
@@ -68,12 +71,9 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   clients: Client[] = [];
   productoIds: number[] = [];
   cantidades: number[] = [];
-  formasDePago: { id: number, formaPago: string }[] = [
-    { id: 1, formaPago: 'CONTADO' },
-    { id: 2, formaPago: 'TARJETA DE CRÉDITO' },
-    { id: 3, formaPago: 'TRANSFERENCIA BANCARIA' },
-    { id: 4, formaPago: 'PAYPAL' }
-  ];
+  formasDePago?: FormaPago[];
+  
+  
   
   valorTotalPedido: number = 0;
   stockAnterior: number = 0;
@@ -113,11 +113,21 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
     this.loadProducts();
     this.loadListPedidos();
     this.loadClients();
+    this.loadFormasDePago();
     
   }
 
   loadListPedidos(): void {
     this.selectedProducts = this.inventoryService.getSelectedProducts();
+  }
+
+  loadFormasDePago(): void {
+    this.formaPagoService.getAllFormasDePago().subscribe(
+      response => {
+        this.formasDePago = response
+      },
+      error => console.log('Error al obtener las formas de pago: ' + error)
+    );
   }
 
   loadProducts(): void {
@@ -179,7 +189,8 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
       productos: this.selectedProducts,
       cantidades: this.cantidades,
     };
-    console.log(pedidoRequest);
+
+    
     this.pedidoService.savePedido(pedidoRequest).subscribe(
       (response) => {
         console.log('Pedido guardado con exito ', response);
@@ -188,7 +199,6 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
         console.error('Error al guardar el pedido', error);
       }
     );
-    // Crear el objeto pedido con la información básica
   }
 
   selectedCliente(trElement: HTMLTableRowElement): void {
