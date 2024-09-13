@@ -26,6 +26,7 @@ import { PedidoDetalleService } from '../../../../../service/pedido-detalle.serv
 import { ToastsService } from '../../../../../service/toasts.service';
 import { FormaPagoService } from '../../../../../service/forma-pago.service';
 import { FormaPago } from '../../../../../model/forma-pago.model';
+import { PedidoDetalle } from '../../../../../model/pedidoDetalle.model';
 
 
 
@@ -71,7 +72,7 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   clients: Client[] = [];
   productoIds: number[] = [];
   cantidades: number[] = [];
-  formasDePago?: FormaPago[];
+  formasDePago: FormaPago[] = [];
   
   
   
@@ -172,11 +173,12 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   }
 
   sendPedido() {
+    
     let pedido: Pedido = {
       price: this.labelCliente.get('price')?.value,
       address: this.labelCliente.get('address')?.value,
       client: this.clients[0],
-      paymentType: this.labelCliente.get('paymentType')?.value,
+      paymentType: this.formasDePago[this.labelCliente.get('paymentType')?.value]
     };
 
     for (let index = 0; index < this.selectedProducts.length; index++) {
@@ -184,16 +186,12 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
       this.cantidades.push(this.selectedProducts[index].stock);
     }
 
-    const pedidoRequest: PedidoRequest = {
-      pedido: pedido,
-      productos: this.selectedProducts,
-      cantidades: this.cantidades,
-    };
 
     
-    this.pedidoService.savePedido(pedidoRequest).subscribe(
+    this.pedidoService.savePedido(pedido).subscribe(
       (response) => {
-        console.log('Pedido guardado con exito ', response);
+        console.log(response)
+        this.pedidoDetalleService.savePedidoDetalle(response, this.selectedProducts, this.cantidades);
       },
       (error) => {
         console.error('Error al guardar el pedido', error);
