@@ -16,8 +16,8 @@ export class PedidoService {
     return this.http.get<Pedido[]>(`${this.apiUrl}/getPedidos`);
   }
 
-  public savePedido(pedidoRequest: PedidoRequest): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/savePedido`, pedidoRequest);
+  public savePedido(pedido: Pedido): Observable<Pedido> {
+    return this.http.post<Pedido>(`${this.apiUrl}/savePedido`, pedido);
 }
 
 }
