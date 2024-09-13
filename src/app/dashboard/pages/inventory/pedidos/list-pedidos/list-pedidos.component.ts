@@ -24,6 +24,11 @@ import { PedidoRequest } from '../../../../../model/pedido-request';
 import { PedidoService } from '../../../../../service/pedido.service';
 import { PedidoDetalleService } from '../../../../../service/pedido-detalle.service';
 import { ToastsService } from '../../../../../service/toasts.service';
+import { FormaPagoService } from '../../../../../service/forma-pago.service';
+import { FormaPago } from '../../../../../model/forma-pago.model';
+import { PedidoDetalle } from '../../../../../model/pedidoDetalle.model';
+
+
 
 @Component({
   selector: 'app-list-pedidos',
@@ -58,6 +63,7 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   private alerts = inject(AlertsService);
   private cdr = inject(ChangeDetectorRef);
   private toastService = inject(ToastsService);
+  private formaPagoService = inject(FormaPagoService);
 
   selectedProducts: Inventory[] = [];
   Products: Inventory[] = [];
@@ -66,12 +72,18 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   clients: Client[] = [];
   productoIds: number[] = [];
   cantidades: number[] = [];
-
+  formasDePago: FormaPago[] = [];
+  
+  
+  
+  valorTotalPedido: number = 0;
+  stockAnterior: number = 0;
   clientSelected: string = '';
   stock: number = 0;
   //clienteABuscar: number = 0;
   labelCliente: FormGroup;
   confirmedDelivery: boolean = false;
+  productoAgregadoAlaForma: boolean = false;
   clienteEncontrado: boolean = false;
   productoAgregadoToForm: boolean = false;
   stockModificado = false; // Flag para controlar si el stock ha sido modificado
@@ -102,10 +114,21 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
     this.loadProducts();
     this.loadListPedidos();
     this.loadClients();
+    this.loadFormasDePago();
+    
   }
 
   loadListPedidos(): void {
     this.selectedProducts = this.inventoryService.getSelectedProducts();
+  }
+
+  loadFormasDePago(): void {
+    this.formaPagoService.getAllFormasDePago().subscribe(
+      response => {
+        this.formasDePago = response
+      },
+      error => console.log('Error al obtener las formas de pago: ' + error)
+    );
   }
 
   loadProducts(): void {
@@ -150,11 +173,12 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   }
 
   sendPedido() {
+    
     let pedido: Pedido = {
       price: this.labelCliente.get('price')?.value,
       address: this.labelCliente.get('address')?.value,
       client: this.clients[0],
-      paymentType: this.labelCliente.get('paymentType')?.value,
+      paymentType: this.formasDePago[this.labelCliente.get('paymentType')?.value]
     };
 
     for (let index = 0; index < this.selectedProducts.length; index++) {
@@ -162,21 +186,17 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
       this.cantidades.push(this.selectedProducts[index].stock);
     }
 
-    const pedidoRequest: PedidoRequest = {
-      pedido: pedido,
-      productos: this.selectedProducts,
-      cantidades: this.cantidades,
-    };
-    console.log(pedidoRequest);
-    this.pedidoService.savePedido(pedidoRequest).subscribe(
+
+    
+    this.pedidoService.savePedido(pedido).subscribe(
       (response) => {
-        console.log('Pedido guardado con exito ', response);
+        console.log(response)
+        this.pedidoDetalleService.savePedidoDetalle(response, this.selectedProducts, this.cantidades);
       },
       (error) => {
         console.error('Error al guardar el pedido', error);
       }
     );
-    // Crear el objeto pedido con la información básica
   }
 
   selectedCliente(trElement: HTMLTableRowElement): void {
@@ -184,13 +204,10 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
       trElement
     );
     const cliente = this.clients[index];
-    const clientDetails = {
-      client: cliente.name + ' ' + cliente.lastName,
-    };
 
     if (!this.clients.some((p) => p.id === index)) {
-      this.labelCliente.patchValue(clientDetails);
-      this.labelCliente.get('client')?.disable();
+      this.labelCliente.get('client')?.setValue(cliente.id);
+      this.clienteEncontrado = true;
       this.clients.splice(index, 1);
       this.alerts.cerrarAlerta();
     }
@@ -286,6 +303,7 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
     // Hacemos una copia del producto antes de asignarlo al form
     const product = { ...this.selectedProducts[index] };
     this.labelCliente.patchValue(product);
+    this.productoAgregadoAlaForma = true;
 
     const id = this.labelCliente.get('id')?.value;
 
@@ -333,6 +351,12 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
         );
       }
     }
+  }
+
+  calcularPrecioXStock(precio: number, stock: number) {
+    const totalPrecioXStock = precio * stock;
+    this.valorTotalPedido += totalPrecioXStock;
+    console.log(this.valorTotalPedido)
   }
 
   showClients() {
