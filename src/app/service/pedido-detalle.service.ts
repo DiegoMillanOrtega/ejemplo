@@ -7,11 +7,10 @@ import { Pedido } from '../model/pedido.model';
 
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PedidoDetalleService {
-
-  private apiUrl: string = 'http://localhost:8080/pedidoDetalle'
+  private apiUrl: string = 'http://localhost:8080/pedidoDetalle';
   private http = inject(HttpClient);
 
   

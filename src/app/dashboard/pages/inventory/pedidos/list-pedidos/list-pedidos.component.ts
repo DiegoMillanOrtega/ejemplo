@@ -26,6 +26,7 @@ import { PedidoDetalleService } from '../../../../../service/pedido-detalle.serv
 import { ToastsService } from '../../../../../service/toasts.service';
 import { FormaPagoService } from '../../../../../service/forma-pago.service';
 import { FormaPago } from '../../../../../model/forma-pago.model';
+import { PedidoDetalle } from '../../../../../model/pedidoDetalle.model';
 
 
 
@@ -172,11 +173,13 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   }
 
   sendPedido() {
+    
 
     let pedido: Pedido = {
       price: this.labelCliente.get('price')?.value,
       address: this.labelCliente.get('address')?.value,
       client: this.clients[0],
+      paymentType: this.formasDePago[this.labelCliente.get('paymentType')?.value]
       paymentType: this.formasDePago[this.labelCliente.get('paymentType')?.value],
     };
 
@@ -184,9 +187,15 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
       this.productoIds.push(this.selectedProducts[index].id);
       this.cantidades.push(this.selectedProducts[index].stock);
     }
+
+
+    
+    this.pedidoService.savePedido(pedido).subscribe(
     
     this.pedidoService.savePedido(pedido).subscribe(
       (response) => {
+        console.log(response)
+        this.pedidoDetalleService.savePedidoDetalle(response, this.selectedProducts, this.cantidades);
         console.log(response);
         this.pedidoDetalleService.savePedidoDetalle(response, this.selectedProducts, this.cantidades).subscribe(
           (response) => console.log(response),
@@ -206,6 +215,8 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
     const cliente = this.clients[index];
 
     if (!this.clients.some((p) => p.id === index)) {
+      this.labelCliente.get('client')?.setValue(cliente.id);
+      this.clienteEncontrado = true;
       this.labelCliente.get('client')?.setValue(cliente.id);
       this.clienteEncontrado = true;
       this.clients.splice(index, 1);
@@ -304,6 +315,7 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
     const product = { ...this.selectedProducts[index] };
     this.labelCliente.patchValue(product);
     this.productoAgregadoAlaForma = true;
+    this.productoAgregadoAlaForma = true;
 
     const id = this.labelCliente.get('id')?.value;
 
@@ -351,6 +363,12 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
         );
       }
     }
+  }
+
+  calcularPrecioXStock(precio: number, stock: number) {
+    const totalPrecioXStock = precio * stock;
+    this.valorTotalPedido += totalPrecioXStock;
+    console.log(this.valorTotalPedido)
   }
 
   calcularPrecioXStock(precio: number, stock: number) {

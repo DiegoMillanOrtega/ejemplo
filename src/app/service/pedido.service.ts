@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Pedido } from '../model/pedido.model';
-import { PedidoRequest } from '../model/pedido-request';
+
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +16,8 @@ export class PedidoService {
     return this.http.get<Pedido[]>(`${this.apiUrl}/getPedidos`);
   }
 
-  public savePedido(pedido: Pedido): Observable<Pedido> {
-    return this.http.post<Pedido>(`${this.apiUrl}/savePedido`, pedido);
+  public savePedido(pedido: Pedido): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/savePedido`, pedido);
 }
 
 }
