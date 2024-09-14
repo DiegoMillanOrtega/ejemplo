@@ -5,6 +5,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { CategoryService } from '../../../../service/category.service';
 import { Category } from '../../../../model/category.model';
+import { Inventory } from '../../../../model/inventory.model';
+import { AlertsService } from '../../../../alerts/alerts.service';
 
 
 @Component({
@@ -20,6 +22,7 @@ export class DetailsProductsComponent implements OnInit{
   private _inventoryService = inject(InventoryService);
   private _route = inject(Router);
   private categoryService = inject(CategoryService);
+  private alerts = inject(AlertsService);
 
   productId: number = 0;
   product?: string;
@@ -71,24 +74,36 @@ export class DetailsProductsComponent implements OnInit{
   }
 
   actualizarProducto(): void {
-    this.detailsProduct.get('id')?.enable()
-    this._inventoryService.saveProduct(this.detailsProduct.value).subscribe(
-      response => {
-        Swal.fire({
-          title: 'Producto actualizado exitosamente',
-          icon: 'success',
-          position: 'top-right',
-          showConfirmButton: false,
-          timer: 900,
-        })
-        this._route.navigate(['/inventory']);
+    this.detailsProduct.get('id')?.enable();
 
-      },
-      error => window.alert(error)
-    )
+    const category = this.categoryList.find(category => category.category === this.detailsProduct.get('category')?.value);
+
+    if (category) {
+      const indexCategory = this.categoryList.indexOf(category);
+
+      const body = {
+        id: this.detailsProduct.get('id')?.value,
+        product: this.detailsProduct.get('product')?.value,
+        category: this.categoryList[indexCategory],
+        price: this.detailsProduct.get('price')?.value,
+        stock: this.detailsProduct.get('stock')?.value,
+      }
+  
+      this._inventoryService.saveProduct(body).subscribe(
+        response => {
+          this.alerts.mostrarMensajeExito('Producto Actualizado exitosamente');
+          this._route.navigate(['/inventory']);
+  
+        },
+        error => this.alerts.mostrarMensajeError('¡Error al Actualizar el Producto!', error)
+      )
+    }
+    
+    
 
     this.detailsProduct.get('id')?.disable();
   }
+
 }
 
 
