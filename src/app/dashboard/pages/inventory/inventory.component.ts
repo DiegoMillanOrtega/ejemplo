@@ -6,6 +6,7 @@ import { CategoryService } from '../../../service/category.service';
 import { Category } from '../../../model/category.model';
 import { AlertsService } from '../../../alerts/alerts.service';
 import { Pedido } from '../../../model/pedido.model';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-inventory',
@@ -16,6 +17,7 @@ export class InventoryComponent implements OnInit {
   private _inventoryService = inject(InventoryService);
   private categoryService = inject(CategoryService);
   private alerts = inject(AlertsService);
+  private route = inject(ActivatedRoute);
 
   inventoryList: Inventory[] = [];
   categoryList: Category[] = [];
@@ -24,6 +26,22 @@ export class InventoryComponent implements OnInit {
   productCategory: string = '';
   loading: boolean = true;
   confirmedProductDelivery: boolean = false;
+  mostrarProductosSinStock: boolean = false;
+  
+  ngOnInit(): void {
+    
+    
+    this.route.queryParams.subscribe(params => {
+      this.mostrarProductosSinStock = params['sinStock'] === 'true';
+    })
+    
+    this.getAllProductos();
+    this.getAllCategory();
+
+    setTimeout(() => {
+      this.loading = false;
+    }, 1000);
+  }
 
   async deleteProduct(id: number) {
     const resultado = await this.alerts.mostrarConfirmacion();
@@ -47,23 +65,27 @@ export class InventoryComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
+
+  getAllProductos() {
     this._inventoryService.getInventoryList().subscribe({
-      next: (data) => (this.inventoryList = data),
+      next: (data) => {
+        this.inventoryList = data
+        if (this.mostrarProductosSinStock) {this.inventoryList = this.inventoryList.filter(product => product.stock < 5)}
+      },
       error: (error) =>
         console.error('Error al obtener la lista de inventario', error),
       complete: () => (this.loading = false),
     });
+  }
+
+  getAllCategory() {
+    //this.getAllProductos();
     this.categoryService.getCategoryList().subscribe(
       (data) => {
         this.categoryList = data;
       },
       (error) => console.error('Error al obtener la lista de categorias', error)
     );
-
-    setTimeout(() => {
-      this.loading = false;
-    }, 1000);
   }
 
   buscarProductos() {

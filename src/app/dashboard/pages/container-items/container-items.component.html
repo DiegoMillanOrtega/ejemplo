@@ -38,7 +38,7 @@
                 <p>Entrada</p>
             </div>
         </a>
-        <a href="#">
+        <a routerLink="/inventory" [queryParams]="{sinStock: true}">
             <div class="grid-item">
                 <div>
                     <app-icons-svg [nombreIcono]="'stock'" [width]="50" [height]="50"></app-icons-svg>
