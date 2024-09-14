@@ -26,14 +26,18 @@ export class AlertsService {
       title: titulo,
       text: mensaje,
       icon: 'success',
+      showConfirmButton: false,
+      timer: 1500
     });
   }
 
-  mostrarMensajeError(mensaje: string): void {
+  mostrarMensajeError(titulo?: string, mensaje?: string): void {
     Swal.fire({
-      title: '¡Error!',
+      title: titulo,
       text: mensaje,
       icon: 'error',
+      showConfirmButton: false,
+      timer: 1500
     });
   }
 
