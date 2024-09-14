@@ -28,8 +28,6 @@ import { FormaPagoService } from '../../../../../service/forma-pago.service';
 import { FormaPago } from '../../../../../model/forma-pago.model';
 import { PedidoDetalle } from '../../../../../model/pedidoDetalle.model';
 
-
-
 @Component({
   selector: 'app-list-pedidos',
   templateUrl: './list-pedidos.component.html',
@@ -73,9 +71,7 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   productoIds: number[] = [];
   cantidades: number[] = [];
   formasDePago: FormaPago[] = [];
-  
-  
-  
+
   valorTotalPedido: number = 0;
   stockAnterior: number = 0;
   clientSelected: string = '';
@@ -115,7 +111,6 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
     this.loadListPedidos();
     this.loadClients();
     this.loadFormasDePago();
-    
   }
 
   loadListPedidos(): void {
@@ -124,10 +119,10 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
 
   loadFormasDePago(): void {
     this.formaPagoService.getAllFormasDePago().subscribe(
-      response => {
-        this.formasDePago = response
+      (response) => {
+        this.formasDePago = response;
       },
-      error => console.log('Error al obtener las formas de pago: ' + error)
+      (error) => console.log('Error al obtener las formas de pago: ' + error)
     );
   }
 
@@ -173,14 +168,12 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   }
 
   sendPedido() {
-    
-
     let pedido: Pedido = {
       price: this.labelCliente.get('price')?.value,
       address: this.labelCliente.get('address')?.value,
       client: this.clients[0],
-      paymentType: this.formasDePago[this.labelCliente.get('paymentType')?.value]
-      paymentType: this.formasDePago[this.labelCliente.get('paymentType')?.value],
+      paymentType:
+        this.formasDePago[this.labelCliente.get('paymentType')?.value],
     };
 
     for (let index = 0; index < this.selectedProducts.length; index++) {
@@ -188,19 +181,24 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
       this.cantidades.push(this.selectedProducts[index].stock);
     }
 
-
-    
-    this.pedidoService.savePedido(pedido).subscribe(
-    
     this.pedidoService.savePedido(pedido).subscribe(
       (response) => {
-        console.log(response)
-        this.pedidoDetalleService.savePedidoDetalle(response, this.selectedProducts, this.cantidades);
         console.log(response);
-        this.pedidoDetalleService.savePedidoDetalle(response, this.selectedProducts, this.cantidades).subscribe(
-          (response) => console.log(response),
-          (error) => console.error('error al guardar los detalles del pedido: '+ error)
-        )
+        this.pedidoDetalleService.savePedidoDetalle(
+          response,
+          this.selectedProducts,
+          this.cantidades
+        );
+        console.log(response);
+        this.pedidoDetalleService
+          .savePedidoDetalle(response, this.selectedProducts, this.cantidades)
+          .subscribe(
+            (response) => console.log(response),
+            (error) =>
+              console.error(
+                'error al guardar los detalles del pedido: ' + error
+              )
+          );
       },
       (error) => {
         console.error('Error al guardar el pedido', error);
@@ -281,15 +279,17 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   }
 
   addProductToSelection(trElement: HTMLTableRowElement): void {
-    const index = Array.from(trElement.parentNode?.children ?? []).indexOf(
-      trElement
-    );
+    const id = trElement.getAttribute('data-id'); // Obtener el identificador único
 
-    if (index >= 0 && index < this.productsNotSelected.length) {
-      const product = this.productsNotSelected[index];
+    if (id) {
+      const product = this.productsNotSelected.find((p) => p.id === Number(id));
 
-      if (!this.selectedProducts.some((p) => p.id === product.id)) {
+      if (product && !this.selectedProducts.some((p) => p.id === product.id)) {
         this.selectedProducts.push(product);
+        this.productsNotSelected = this.productsNotSelected.filter(
+          (p) => p.id !== Number(id)
+        );
+        const index = this.productsNotSelected.indexOf(product);
         this.productsNotSelected.splice(index, 1);
       }
     }
@@ -368,13 +368,7 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   calcularPrecioXStock(precio: number, stock: number) {
     const totalPrecioXStock = precio * stock;
     this.valorTotalPedido += totalPrecioXStock;
-    console.log(this.valorTotalPedido)
-  }
-
-  calcularPrecioXStock(precio: number, stock: number) {
-    const totalPrecioXStock = precio * stock;
-    this.valorTotalPedido += totalPrecioXStock;
-    console.log(this.valorTotalPedido)
+    console.log(this.valorTotalPedido);
   }
 
   showClients() {

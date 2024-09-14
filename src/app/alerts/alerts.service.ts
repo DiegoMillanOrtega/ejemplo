@@ -124,7 +124,7 @@ export class AlertsService {
 
       const pageItems = getPageItems(page);
       pageItems.forEach((item, index) => {
-        tableHtml += `<tr>`;
+        tableHtml += `<tr data-id="${item.id}">`;
         columns.forEach((column) => {
           if (column.key === 'category' && typeof item[column.key] === 'object') {
             tableHtml += `<td>${item[column.key].category}</td>`;
