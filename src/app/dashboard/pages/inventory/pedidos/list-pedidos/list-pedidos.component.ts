@@ -107,6 +107,10 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.labelCliente.get('product')?.disable();
+    this.labelCliente.get('price')?.disable();
+    this.labelCliente.get('stock')?.disable();
+
     this.loadProducts();
     this.loadListPedidos();
     this.loadClients();
@@ -260,6 +264,14 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
     );
 
     this.selectedProducts.splice(index, 1);
+
+    //Limpiar inputs
+    this.labelCliente.get('product')?.setValue('');
+    this.labelCliente.get('price')?.setValue('');
+    this.labelCliente.get('stock')?.setValue('');
+    this.labelCliente.get('stock')?.disable();
+
+    this.resetIndividualControls();
     this.showSelectedProducts();
   }
 
@@ -326,13 +338,10 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
 
     // Actualiza el valor del stock con el stock original
     this.stock = this.Products[indexProducto].stock;
+
+    this.labelCliente.get('stock')?.enable();
     // Actualiza el campo 'stock' en el formulario con el valor original
     this.labelCliente.get('stock')?.setValue(this.stock);
-
-    // Deshabilitar los campos del producto que no se deben modificar
-    this.labelCliente.get('id')?.disable();
-    this.labelCliente.get('product')?.disable();
-    this.labelCliente.get('price')?.disable();
 
     this.alerts.cerrarAlerta();
     this.productoAgregadoToForm = true;
@@ -369,6 +378,12 @@ export class ListPedidosComponent implements OnInit, AfterViewInit {
     const totalPrecioXStock = precio * stock;
     this.valorTotalPedido += totalPrecioXStock;
     console.log(this.valorTotalPedido);
+  }
+
+  resetIndividualControls() {
+    this.labelCliente.get('product')?.reset(); 
+    this.labelCliente.get('price')?.reset();
+    this.labelCliente.get('stock')?.reset();
   }
 
   showClients() {
